@@ -70,7 +70,7 @@ preds <- c("Elevation",
 rm(df)
 str(train)
 #model <- rpart(factor(Cover_Type)~., data = train[, preds], control = rpart.control(cp = 0.0001))
-model <- rpart(train[,targ]~., data = train[, preds], control = rpart.control(cp = 0.0001))
+model <- rpart(train[,targ]~., data = train[, preds], control = rpart.control(minsplit = 5, cp = 0.0001, maxdepth = 25))
 predictions <- predict(model, test, type = "class")
 print(predictions)
 confusionMatrix(factor(predictions), factor(test$Cover_Type))

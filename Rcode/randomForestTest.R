@@ -61,12 +61,14 @@ preds <- c("Elevation",
 # some model data
 set.seed(42)
 limit.rows <- 250000
+df$Cover_Type <- as.factor(df$Cover_Type)
 df <- df[sample(nrow(df), limit.rows),]
 train.fraction <- 0.8
 train.ind <- sample(nrow(df), round(train.fraction*nrow(df)))
 train <- df[train.ind,]
 test <- df[-train.ind,]
 
-rf <- buildRandomForest(train_dataset = train,test_dataset = test, target = targ, predictors = preds, perc_predictors = 0.7, perc_samples = 0.6, ntrees = ntrees, min_split = 10, complex_param = 0.005, max_depth = 30, isClassification = TRUE)
-rf
+rf <- buildRandomForest(train_dataset = train,test_dataset = test, target = targ, predictors = preds, perc_predictors = 0.8, perc_samples = 0.8, ntrees = ntrees, min_split = 5, complex_param = 0.001, max_depth = 25, isClassification = TRUE)
+factor(rf)
+confusionMatrix(factor(rf), factor(test$Cover_Type))
 

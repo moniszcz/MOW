@@ -21,7 +21,7 @@ buildRandomForest <- function(train_dataset, test_dataset, target, predictors, p
   if(max_depth > 30){
     max_depth <- 30
   }
-  
+  predictionsRF <- c()
   # build trees
   for(i in 1:ntrees) {
     # choose perc_predictors sample of the predictors without replacing
@@ -40,27 +40,38 @@ buildRandomForest <- function(train_dataset, test_dataset, target, predictors, p
     } else{
       t_control <- rpart.control(minsplit = min_split, minbucket =  min_bucket, cp = complex_param, maxdepth = max_depth)
     }
-      
     # build a tree
     tree <- rpart(forestDs[in_bag,target] ~ ., forestDs[in_bag,tree_predictors], control = t_control) 
     # add our tree to the forest
     randForest[[i]] <- tree
-  }
-  # return our list of trees
-  #return(randForest)
-  
-  predictionsRF <- c()
-  for(i in 1:ntrees){
-    prediction <- predict(randForest[[i]], test_dataset)
-    print(prediction)
+    #For classification only
+    if(isClassification) {
+      prediction <- predict(tree, test_dataset, type = "class")
+    }
+    #prediction <- predict(tree, test_dataset, type = "class")
     predictionsRF <- cbind(predictionsRF, prediction)
   }
   predicted_value <- apply(predictionsRF, 1, function(x) names(which.max(table(x))))
+  print(predicted_value)
   data_to_return <- cbind(test_dataset, predicted_value)
-  if(isClassification) {
-    factorLst <- levels(test_dataset[, target])
-    data_to_return$predicted_value <- factorLst[data_to_return$predicted_value]
-  }
+
+  #  
+  return(predicted_value)
   
-  return(data_to_return)
 }
+
+#Validate predicted value
+
+# validateRandomForest <- function(data, target){
+#   cnt_correct = 0
+#   cnt_incorrect = 0
+#   for(i in nrow(data)){
+#     if(data[i, target] == data[i, ncol(data)]){
+#       cnt_correct = cnt_correct + 1
+#     }
+#     else{
+#       cnt_incorrect = cnt_incorrect + 1
+#     }
+#   }
+#   list(cnt_correct, cnt_incorrect)
+# }
