@@ -1,6 +1,7 @@
 library(rpart)
 library(rpart.plot)
 library(caret)
+
 #build decision tree
 #arguments:
 #   train - dataset for training
@@ -24,13 +25,13 @@ if(missing(preds)){
 predictions <- predict(model, test, type = "class")
 confMat <- table(factor(predictions), factor(test[[targ]]))
 print(nrow(confMat))
-if(nrow(confMat) < 7){
+if(nrow(confMat) < ncol(confMat)){
   print(confMat)
   accuracy <- sum(diag(confMat))/sum(confMat)
   print(accuracy)
 }else{
-  # confusionMatrix(factor(predictions),factor(test[[targ]]))
-  print(confusionMatrix(factor(predictions),factor(test[[targ]])))
+  confMat1 <- confusionMatrix(factor(predictions),factor(test[[targ]]))
+  print(confMat1)
 }
 if(missing(preds)){
   X11()

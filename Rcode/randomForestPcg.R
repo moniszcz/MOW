@@ -2,31 +2,34 @@ library(ggplot2)
 library(cowplot)
 library(randomForest)
 library(caret)
+# library(reprtree)
 
-source("loadData.R")
-#check for missing values
-sapply(df,function(x)any(is.na(x)))
-#Since we are going to be randomly sampling things,
-#ets set the seed for the random number generator
-#so that we can reproduce results
-set.seed(42)
-limit.rows <- 250000
-df <- df[sample(nrow(df), limit.rows),]
-table(df$Cover_Type)
-#imbalanced classes
-
-#I’ll use a standard 80/20 split, train the model, 
-#then evaluate it and print the confusion matrix
-train.fraction <- 0.8
-
-train.ind <- sample(nrow(df), round(train.fraction*nrow(df)))
-train <- df[train.ind,]
-test <- df[-train.ind,]
-
-rm(df)
-#we want to predict Cover_Type using all of the other columns in dataset
-model <- randomForest(factor(Cover_Type)~., data = train, ntree = 200, importance = TRUE)
+#build random forest
+#arguments:
+#   train - dataset for training
+#   test - dataset for testing
+#   target - feature to predict
+#   preds - features to build the tree
+#   ntree - number of trees
+#   importance - If True, the model will calculate the feature importance for further analysis. (default = False)
+randomForestPcg <- function(train, test, targ, preds, ntree, importance){
+  if(missing(preds)){
+    model <- randomForest(train[[targ]]~., data = train, ntree = ntree, importance = importance)
+  }else{
+    model <- randomForest(train[[targ]]~., data = train[, preds], ntree = ntree, importance = importance)
+  }
+  
 predictions <- predict(model, test, type = "class")
-confusionMatrix(factor(predictions), factor(test$Cover_Type))
+confMat <- table(factor(predictions), factor(test[[targ]]))
+if(nrow(confMat) < ncol(confMat)){
+  print(confMat)
+  accuracy <- sum(diag(confMat))/sum(confMat)
+  print(accuracy)
+}else{
+  confMat1 <- confusionMatrix(factor(predictions),factor(test[[targ]]))
+  print(confMat1)
+}
+# reprtree:::plot.getTree(model)
 importance <- varImp(model)
 head(importance)
+}
