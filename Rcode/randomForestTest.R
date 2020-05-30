@@ -68,7 +68,7 @@ train.ind <- sample(nrow(df), round(train.fraction*nrow(df)))
 train <- df[train.ind,]
 test <- df[-train.ind,]
 
-rf <- buildRandomForest(train_dataset = train,test_dataset = test, target = targ, predictors = preds, perc_predictors = 0.8, perc_samples = 0.8, ntrees = ntrees, min_split = 5, complex_param = 0.001, max_depth = 25, isClassification = TRUE)
+rf <- buildRandomForest(train_dataset = train,test_dataset = test, target = targ, predictors = preds, perc_predictors = 0.8, perc_samples = 0.8, ntrees = ntrees, min_split = 5, complex_param = 0.001, max_depth = 25)
 factor(rf)
 confusionMatrix(factor(rf), factor(test$Cover_Type))
 

@@ -1,7 +1,7 @@
 #creates random forest 
 #arguments:
-#   train_dataset - dataset containing training examples
-#   test_dataset - dataset containing test examples
+#   train_dataset - dataset for training
+#   test_dataset - dataset for testing
 #   target - feature to predict
 #   predictors - features to be used for building tree
 #   perc_predictors - specifies part of features to be used for building tree
@@ -14,7 +14,7 @@
 #               Values greater than 30 rpart will give nonsense results on 32-bit machines
 #   isClassification - if target is a class
 #   factorLst - list of target values for classification
-buildRandomForest <- function(train_dataset, test_dataset, target, predictors, perc_predictors, perc_samples, ntrees, min_split, min_bucket, complex_param, max_depth, isClassification) {
+buildRandomForest <- function(train_dataset, test_dataset, target, predictors, perc_predictors, perc_samples, ntrees, min_split, min_bucket, complex_param, max_depth) {
   
   # create an empty list for trees
   randForest <- list()
@@ -44,11 +44,8 @@ buildRandomForest <- function(train_dataset, test_dataset, target, predictors, p
     tree <- rpart(forestDs[in_bag,target] ~ ., forestDs[in_bag,tree_predictors], control = t_control) 
     # add our tree to the forest
     randForest[[i]] <- tree
-    #For classification only
-    if(isClassification) {
-      prediction <- predict(tree, test_dataset, type = "class")
-    }
-    #prediction <- predict(tree, test_dataset, type = "class")
+
+    prediction <- predict(tree, test_dataset, type = "class")
     predictionsRF <- cbind(predictionsRF, prediction)
   }
   predicted_value <- apply(predictionsRF, 1, function(x) names(which.max(table(x))))
