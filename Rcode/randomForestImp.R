@@ -15,18 +15,13 @@ library(dplyr)
 #   min_split - the minimum number of observations that must exist in a node in order for a split to be attempted
 #   min_bucket - he minimum number of observations in any terminal <leaf> node. If only one of minbucket or minsplit is specified, 
 #               the code either sets minsplit to minbucket*3 or minbucket to minsplit/3, as appropriate
-#   max_depth - set the maximum depth of any node of the final tree, with the root node counted as depth 0. 
-#               Values greater than 30 rpart will give nonsense results on 32-bit machines
 
-randomForestImp <- function(train, test, targ, predictors, perc_predictors, perc_samples, ntree, min_split, min_bucket, complex_param, max_depth) {
+randomForestImp <- function(train, test, targ, predictors, perc_predictors, perc_samples, ntree, min_split, min_bucket, complex_param) {
   
   # create an empty list for trees
   randForest <- list()
   predictions <- c()
   
-  if(max_depth > 30){
-    max_depth <- 30
-  }
   # build trees
   for(i in 1:ntree) {
     # choose perc_predictors sample of the predictors without replacing
@@ -39,14 +34,14 @@ randomForestImp <- function(train, test, targ, predictors, perc_predictors, perc
     in_bag <- which(forestDS$in_bag == 1)
     # set the rpart.control object
     if(missing(min_split)){
-      t_control <- rpart.control(minbucket =  min_bucket, cp = complex_param, maxdepth = max_depth)
+      t_control <- rpart.control(minbucket =  min_bucket, cp = complex_param)
     } else if (missing(min_bucket)){
-      t_control <- rpart.control(minsplit = min_split, cp = complex_param, maxdepth = max_depth)
+      t_control <- rpart.control(minsplit = min_split, cp = complex_param)
     } else{
-      t_control <- rpart.control(minsplit = min_split, minbucket =  min_bucket, cp = complex_param, maxdepth = max_depth)
+      t_control <- rpart.control(minsplit = min_split, minbucket =  min_bucket, cp = complex_param)
     }
     # build a tree
-    tree <- rpart(forestDS[in_bag,targ] ~ ., forestDS[in_bag,tree_predictors], control = t_control) 
+    tree <- rpart(forestDS[in_bag,targ]~., forestDS[in_bag,tree_predictors], control = t_control) 
     # add our tree to the forest
     randForest[[i]] <- tree
 
@@ -55,13 +50,15 @@ randomForestImp <- function(train, test, targ, predictors, perc_predictors, perc
   }
   predicted_value <- apply(predictions, 1, function(x) names(which.max(table(x))))
   data_to_return <- cbind(test, predicted_value)
-  confMat <- table(factor(predicted_value), factor(test[[targ]]))
-  if(nrow(confMat) < ncol(confMat)){
-    print(confMat)
-    accuracy <- sum(diag(confMat))/sum(confMat)
-    print(accuracy)
-  }else{
-    confMat1 <- confusionMatrix(factor(predicted_value), factor(test[[targ]]))
-    print(confMat1)
-  }
+  
+  confMat1 <- confusionMatrix(factor(predicted_value), factor(test[[targ]]))
+  print(confMat1)
+  confMat01 <- confmat01(predicted_value, test[[targ]])
+  tpfp <- sapply(confMat01, function(cm) c(tpr=tpr(cm), fpr=fpr(cm), fm=f.measure(cm)))
+  tpfp <- round(tpfp, 3)
+  print(tpfp)
+  means <- rowMeans(tpfp)
+  means <- round(means, 3)
+  print(means)
+
 }

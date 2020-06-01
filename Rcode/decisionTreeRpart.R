@@ -1,6 +1,7 @@
 library(rpart)
 library(rpart.plot)
 library(caret)
+source("helper.R")
 
 #build decision tree
 #arguments:
@@ -9,32 +10,32 @@ library(caret)
 #   target - feature to predict
 #   preds - features to build the tree
 #   min_split - the minimum number of observations that must exist in a node in order for a split to be attempted
-#   max_depth - set the maximum depth of any node of the final tree, with the root node counted as depth 0. 
-#               Values greater than 30 rpart will give nonsense results on 32-bit machines
-rpartDT <- function(train, test, targ, preds, min_split, cp, max_depth){
-if(max_depth > 30){
-    max_depth <- 30
-}
+
+rpartDT <- function(train, test, targ, preds, min_split, cp){
   
+targFormula <- as.formula(paste0(targ, "~ ."))
 if(missing(preds)){
-    model <- rpart(train[[targ]]~., data = train, method = "class", control = rpart.control(minsplit = min_split, cp = cp, maxdepth = max_depth))
+    model <- rpart(targFormula, data = train,  control = rpart.control(minsplit = min_split, cp = cp))
 }else{
-    model <- rpart(train[[targ]]~., data = train[, preds], method = "class", control = rpart.control(minsplit = min_split, cp = cp, maxdepth = max_depth))
+    model <- rpart(targFormula, data = train[, preds], control = rpart.control(minsplit = min_split, cp = cp))
 }
 
 predictions <- predict(model, test, type = "class")
-confMat <- table(factor(predictions), factor(test[[targ]]))
-print(nrow(confMat))
-if(nrow(confMat) < ncol(confMat)){
-  print(confMat)
-  accuracy <- sum(diag(confMat))/sum(confMat)
-  print(accuracy)
-}else{
-  confMat1 <- confusionMatrix(factor(predictions),factor(test[[targ]]))
-  print(confMat1)
-}
-if(missing(preds)){
-  X11()
-  rpart.plot(model, box.palette="RdBu", shadow.col="gray", nn=TRUE)
-}
+
+confMat1 <- confusionMatrix(factor(predictions),factor(test[[targ]]))
+print(confMat1)
+confMat01 <- confmat01(predictions, test[[targ]])
+tpfp <- sapply(confMat01, function(cm) c(tpr=tpr(cm), fpr=fpr(cm), fm=f.measure(cm)))
+tpfp <- round(tpfp, 3)
+print(tpfp)
+means <- rowMeans(tpfp)
+means <- round(means, 3)
+print(means)
+
+# }
+# if(missing(preds)){
+
+ # rpart.plot(model, box.palette="RdBu", shadow.col="gray", nn=TRUE)
+# }
+
 }

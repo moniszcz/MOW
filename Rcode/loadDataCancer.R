@@ -12,4 +12,3 @@ ds$diagnosis <- as.factor(ds$diagnosis)
 #Drop ID
 ds$id <- NULL
 
-str(ds)
