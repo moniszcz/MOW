@@ -31,7 +31,12 @@ randomForestImp <- function(train, test, targ, predictors, perc_predictors, perc
     #make new dataset
     forestDS <- cbind(train, in_bag)
     #observations used for building tree
-    in_bag <- which(forestDS$in_bag == 1)
+    inbagDS <- forestDS[which(forestDS$in_bag == 1), ]
+    inbagPreds <- forestDS[which(forestDS$in_bag == 1), tree_predictors]
+    if(!(targ %in% colnames(inbagPreds)))
+    {
+      inbagPreds <- bind_cols(inbagPreds, inbagDS[targ])
+    }
     # set the rpart.control object
     if(missing(min_split)){
       t_control <- rpart.control(minbucket =  min_bucket, cp = complex_param)
@@ -40,8 +45,9 @@ randomForestImp <- function(train, test, targ, predictors, perc_predictors, perc
     } else{
       t_control <- rpart.control(minsplit = min_split, minbucket =  min_bucket, cp = complex_param)
     }
+    targFormula <- as.formula(paste0(targ, "~ ."))
     # build a tree
-    tree <- rpart(forestDS[in_bag,targ]~., forestDS[in_bag,tree_predictors], control = t_control) 
+    tree <- rpart(targFormula, inbagPreds, control = t_control) 
     # add our tree to the forest
     randForest[[i]] <- tree
 

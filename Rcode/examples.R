@@ -70,14 +70,16 @@ rm(ds)
 
 # rpart package
 source("decisionTreeRpart.R")
-covTypeTree <- rpartDT(train = train_BC, test = test_BC, preds = preds_BC, targ = targ_BC, min_split = 2, cp = 0.0)
+breastCancTree <- rpartDT(train = train_BC, test = test_BC, preds = preds_BC, targ = targ_BC, min_split = 2, cp = 0.0)
 
 
 # randomForest package
 source("randomForestPcg.R")
-CovTypeRF <- randomForestPcg(train = train_BC, test = test_BC, targ = targ_BC, ntree = 10, importance = TRUE, min_split = 2, cp = 0)
+breastCancRF <- randomForestPcg(train = train_BC, test = test_BC, targ = targ_BC, ntree = 10, importance = TRUE, min_split = 2, cp = 0)
 
 
 # randomForest implementation
 source("randomForestImp.R")
-CovTypeImp <- randomForestImp(train = train_BC, test = test_BC, targ = targ_BC, predictors = preds_BC, perc_predictors = 0.8, perc_samples = 0.8, ntree = 10, min_split = 5, complex_param = 0.001)
+breastCancImp <- randomForestImp(train = train_BC, test = test_BC, targ = targ_BC, predictors = preds_BC, perc_predictors = 0.8, perc_samples = 0.8, ntree = 10, min_split = 5, complex_param = 0.001)
+
+ 
