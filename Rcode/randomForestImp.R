@@ -29,15 +29,18 @@ randomForestImp <- function(train, test, targ, predictors, perc_predictors, perc
     tree_predictors <- sample(predictors, length(predictors) * perc_predictors, replace = FALSE)
     # take a sample of the observations using normal distribution
     in_bag <- apply(train, 1, function(v) ifelse(runif(n = 1, min = 0, max = 1) <= perc_samples, 1, 0))
+    
     #make new dataset
     forestDS <- cbind(train, in_bag)
-    #observations used for building tree
+    #dataset containing observations used for building tree
     inbagDS <- forestDS[which(forestDS$in_bag == 1), ]
     inbagPreds <- forestDS[which(forestDS$in_bag == 1), tree_predictors]
+    
     if(!(targ %in% colnames(inbagPreds)))
     {
       inbagPreds <- bind_cols(inbagPreds, inbagDS[targ])
     }
+    
     # set the rpart.control object
     if(missing(min_split)){
       t_control <- rpart.control(minbucket =  min_bucket, cp = complex_param)
@@ -46,6 +49,7 @@ randomForestImp <- function(train, test, targ, predictors, perc_predictors, perc
     } else{
       t_control <- rpart.control(minsplit = min_split, minbucket =  min_bucket, cp = complex_param)
     }
+    # define formula
     targFormula <- as.formula(paste0(targ, "~ ."))
     # build a tree
     tree <- rpart(targFormula, inbagPreds, control = t_control) 
@@ -60,10 +64,13 @@ randomForestImp <- function(train, test, targ, predictors, perc_predictors, perc
   
   confMat1 <- confusionMatrix(factor(predicted_value), factor(test[[targ]]))
   print(confMat1)
+  
   confMat01 <- confmat01(predicted_value, test[[targ]])
+  
   tpfp <- sapply(confMat01, function(cm) c(tpr=tpr(cm), fpr=fpr(cm), fm=f.measure(cm)))
   tpfp <- round(tpfp, 3)
   print(tpfp)
+  
   means <- rowMeans(tpfp)
   means <- round(means, 3)
   print(means)

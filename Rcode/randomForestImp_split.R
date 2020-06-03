@@ -2,7 +2,6 @@ library(rpart)
 library(rpart.plot)
 library(caret)
 library(dplyr)
-source("logic_boost.R")
 source("anova.R")
 
 
