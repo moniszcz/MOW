@@ -27,7 +27,6 @@ randomForestImp_split <- function(train, test, targ, predictors, perc_predictors
   
   alist <- list(init= anova_init, split=anova_split, eval=anova_eval)
   alist_test <- list(init= anova_init2, split=anova_split, eval=anova_eval)
-  lb_methods <- list(init= lb_init, split=lb_split, eval=lb_eval)
   
   
   # build trees

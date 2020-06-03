@@ -1,5 +1,4 @@
 
-
 anova_eval <- function(y, wt, parms) {
   
   wmean <- sum(y*wt)/sum(wt)
