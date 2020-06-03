@@ -1,5 +1,4 @@
 library(rpart)
-library(rpart.plot)
 library(caret)
 library(dplyr)
 source("anova.R")
@@ -18,7 +17,7 @@ source("anova.R")
 #   min_bucket - he minimum number of observations in any terminal <leaf> node. If only one of minbucket or minsplit is specified, 
 #               the code either sets minsplit to minbucket*3 or minbucket to minsplit/3, as appropriate
 
-randomForestImp_split <- function(train, test, targ, predictors, perc_predictors, perc_samples, ntree, min_split, min_bucket, complex_param) {
+randomForestImp_split <- function(train, test, targ, predictors, perc_predictors, ntree, min_split, min_bucket, complex_param) {
   
   # create an empty list for trees
   randForest <- list()
@@ -32,13 +31,11 @@ randomForestImp_split <- function(train, test, targ, predictors, perc_predictors
   for(i in 1:ntree) {
     # choose perc_predictors sample of the predictors without replacing
     tree_predictors <- sample(predictors, length(predictors) * perc_predictors, replace = FALSE)
-    # take a sample of the observations using normal distribution
-    in_bag <- apply(train, 1, function(v) ifelse(runif(n = 1, min = 0, max = 1) <= perc_samples, 1, 0))
-    #make new dataset
-    forestDS <- cbind(train, in_bag)
-    #observations used for building tree
-    inbagDS <- forestDS[which(forestDS$in_bag == 1), ]
-    inbagPreds <- forestDS[which(forestDS$in_bag == 1), tree_predictors]
+    # create a bootstrap dataset with possible replacement
+    inbagDS <- train[sample(nrow(train), replace = TRUE),]
+    
+    inbagPreds <- inbagDS[, tree_predictors]
+    
     if(!(targ %in% colnames(inbagPreds)))
     {
       inbagPreds <- bind_cols(inbagPreds, inbagDS[targ])
@@ -65,10 +62,13 @@ randomForestImp_split <- function(train, test, targ, predictors, perc_predictors
   
   confMat1 <- confusionMatrix(factor(predicted_value), factor(test[[targ]]))
   print(confMat1)
+  
   confMat01 <- confmat01(predicted_value, test[[targ]])
+  
   tpfp <- sapply(confMat01, function(cm) c(tpr=tpr(cm), fpr=fpr(cm), fm=f.measure(cm)))
   tpfp <- round(tpfp, 3)
   print(tpfp)
+  
   means <- rowMeans(tpfp)
   means <- round(means, 3)
   print(means)

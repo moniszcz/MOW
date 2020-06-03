@@ -1,5 +1,4 @@
 library(rpart)
-library(rpart.plot)
 library(caret)
 source("anova.R")
 

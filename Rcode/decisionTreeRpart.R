@@ -1,5 +1,4 @@
 library(rpart)
-library(rpart.plot)
 library(caret)
 source("helper.R")
 
@@ -12,6 +11,7 @@ source("helper.R")
 #   min_split - the minimum number of observations that must exist in a node in order for a split to be attempted
 #   min_bucket - he minimum number of observations in any terminal <leaf> node. If only one of minbucket or minsplit is specified, 
 #               the code either sets minsplit to minbucket*3 or minbucket to minsplit/3, as appropriate
+#   cp - complexity parameter. Any split that does not decrease the overall lack of fit by a factor of cp is not attempted.
 
 rpartDT <- function(train, test, targ, preds, min_split, min_bucket, cp){
   

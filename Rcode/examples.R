@@ -36,17 +36,19 @@ source("decisionTreeRpart_split.R")
 covTypeTree_split <- rpartDT_split(train = train, test = test, targ = targ, preds = preds, min_split = 2, cp = 0)
 
 
-# # randomForest package
-# source("randomForestPcg.R")
-# CovTypeRF <- randomForestPcg(train = train, test = test, targ = targ, ntree = 50, importance = TRUE, min_split = 2, cp = 0)
+# randomForest package
+source("randomForestPcg.R")
+CovTypeRF <- randomForestPcg(train = train, test = test, targ = targ, ntree = 50, importance = TRUE, min_split = 2, cp = 0)
 
 
-# # randomForest implementation
-# source("randomForestImp.R")
-# CovTypeImp <- randomForestImp(train = train, test = test, targ = targ, predictors = preds, perc_predictors = 0.8, perc_samples = 0.8, ntree = 5, min_split = 2, complex_param = 0.0)
-# 
+# randomForest implementation
+source("randomForestImp.R")
+CovTypeImp <- randomForestImp(train = train, test = test, targ = targ, predictors = preds, perc_predictors = 0.8, ntree = 5, min_split = 2, complex_param = 0.0)
+
+
+#randomForest implementation with user defined split function
 source("randomForestImp_split.R")
-CovTypeImp_split <- randomForestImp_split(train = train, test = test, targ = targ, predictors = preds, perc_predictors = 0.8, perc_samples = 0.8, ntree = 5, min_split = 2, complex_param = 0.0)
+CovTypeImp_split <- randomForestImp_split(train = train, test = test, targ = targ, predictors = preds, perc_predictors = 0.8, ntree = 5, min_split = 2, complex_param = 0.0)
 
 
 
@@ -83,20 +85,17 @@ rm(ds)
 source("decisionTreeRpart_split.R")
 breastCancTree_split <- rpartDT_split(train = train_BC, test = test_BC, preds = preds_BC, targ = targ_BC, min_split = 2, cp = 0.0)
 
-# 
-# # randomForest package
-# source("randomForestPcg.R")
-# breastCancRF <- randomForestPcg(train = train_BC, test = test_BC, targ = targ_BC, ntree = 10, importance = TRUE, min_split = 2, cp = 0)
+ 
+# randomForest package
+source("randomForestPcg.R")
+breastCancRF <- randomForestPcg(train = train_BC, test = test_BC, targ = targ_BC, ntree = 10, importance = TRUE, min_split = 2, cp = 0)
 
 
 # randomForest implementation
 source("randomForestImp.R")
-breastCancImp <- randomForestImp(train = train_BC, test = test_BC, targ = targ_BC, predictors = preds_BC, perc_predictors = 0.8, perc_samples = 0.8, ntree = 10, min_split = 5, complex_param = 0.001)
+breastCancImp <- randomForestImp(train = train_BC, test = test_BC, targ = targ_BC, predictors = preds_BC, perc_predictors = 0.4, ntree = 10, min_split = 5, complex_param = 0.001)
 
 
-
+#randomForest implementation with user defined split function
 source("randomForestImp_split.R")
-breastCancImp_split <- randomForestImp_split(train = train_BC, test = test_BC, targ = targ_BC, predictors = preds_BC, perc_predictors = 0.8, perc_samples = 0.8, ntree = 10, min_split = 5, complex_param = 0.001)
-
-
-
+breastCancImp_split <- randomForestImp_split(train = train_BC, test = test_BC, targ = targ_BC, predictors = preds_BC, perc_predictors = 0.8, ntree = 10, min_split = 5, complex_param = 0.001)
