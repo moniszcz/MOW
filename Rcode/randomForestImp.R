@@ -2,6 +2,7 @@ library(rpart)
 library(rpart.plot)
 library(caret)
 library(dplyr)
+source("helper.R")
 
 #create random forest 
 #arguments:

@@ -31,11 +31,4 @@ print(tpfp)
 means <- rowMeans(tpfp)
 means <- round(means, 3)
 print(means)
-
-# }
-# if(missing(preds)){
-
- # rpart.plot(model, box.palette="RdBu", shadow.col="gray", nn=TRUE)
-# }
-
 }

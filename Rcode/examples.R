@@ -45,9 +45,8 @@ covTypeTree_split <- rpartDT_split(train = train, test = test, targ = targ, pred
 # source("randomForestImp.R")
 # CovTypeImp <- randomForestImp(train = train, test = test, targ = targ, predictors = preds, perc_predictors = 0.8, perc_samples = 0.8, ntree = 5, min_split = 2, complex_param = 0.0)
 # 
-# source("randomForestImp_split.R")
-# CovTypeImp_split <- randomForestImp_split(train = train, test = test, targ = targ, predictors = preds, perc_predictors = 0.8, perc_samples = 0.8, ntree = 5, min_split = 2, complex_param = 0.0)
-
+source("randomForestImp_split.R")
+CovTypeImp_split <- randomForestImp_split(train = train, test = test, targ = targ, predictors = preds, perc_predictors = 0.8, perc_samples = 0.8, ntree = 5, min_split = 2, complex_param = 0.0)
 
 
 
@@ -81,9 +80,9 @@ rm(ds)
 # source("decisionTreeRpart.R")
 # breastCancTree <- rpartDT(train = train_BC, test = test_BC, preds = preds_BC, targ = targ_BC, min_split = 2, cp = 0.0)
 # 
-# source("decisionTreeRpart_split.R")
-# breastCancTree_split <- rpartDT_split(train = train_BC, test = test_BC, preds = preds_BC, targ = targ_BC, min_split = 2, cp = 0.0)
-# 
+source("decisionTreeRpart_split.R")
+breastCancTree_split <- rpartDT_split(train = train_BC, test = test_BC, preds = preds_BC, targ = targ_BC, min_split = 2, cp = 0.0)
+
 # 
 # # randomForest package
 # source("randomForestPcg.R")

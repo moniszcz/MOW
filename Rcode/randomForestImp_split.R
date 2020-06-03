@@ -59,7 +59,7 @@ randomForestImp_split <- function(train, test, targ, predictors, perc_predictors
     # add our tree to the forest
     randForest[[i]] <- tree
     
-    pred <- predict(tree, test)#, type = "class")
+    pred <- round(predict(tree, test))
     predictions <- cbind(predictions, pred)
   }
   predicted_value <- apply(predictions, 1, function(x) names(which.max(table(x))))

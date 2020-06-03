@@ -16,7 +16,7 @@ anova_split <- function(y, wt, x, parms, continuous) {
   if (continuous) {
     # continuous x variable
     temp <- cumsum(y*wt)[-n]
-    
+
     left.wt  <- cumsum(wt)[-n]
     right.wt <- sum(wt) #- left.wt
     lmean <- temp/left.wt
