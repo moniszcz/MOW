@@ -16,18 +16,20 @@ source("anova.R")
 
 rpartDT_test <- function(train, test, targ, preds, min_split, cp){
   predictions <- c()
+  
   alist <- list(init= anova_init, split=anova_split, eval=anova_eval)
   alist_test <- list(init= anova_init2, split=anova_split, eval=anova_eval)
-  lb_methods <- list(init= lb_init, split=lb_split, eval=lb_eval)
-  
+
   targFormula <- as.formula(paste0(targ, "~ ."))
   if(missing(preds)){
-    model <- rpart(targFormula, data = train,  method = alist_test, control = rpart.control(minsplit = min_split, cp = cp))
+    model <- rpart(targFormula, data = train,  method = alist, control = rpart.control(minsplit = min_split, cp = cp))
   }else{
-    model <- rpart(targFormula, data = train[, preds], method = alist_test, control = rpart.control(minsplit = min_split, cp = cp))
+    model <- rpart(targFormula, data = train[, preds], method = alist, control = rpart.control(minsplit = min_split, cp = cp))
   }
   
-  pred <- predict(model, test)#, type = "class")
+  #model <- rpart(targFormula, data = train[, preds], method = alist_test, control = rpart.control(minsplit = min_split, cp = cp))
+  
+  pred <- predict(model, test, type = "class")
   predictions <- cbind(predictions, pred)
   
   

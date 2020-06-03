@@ -33,7 +33,7 @@ covTypeTree <- rpartDT(train = train, test = test, targ = targ, min_split = 2, c
 
 
 source("decisionTreeRpart_split.R")
-covTypeTree_split <- rpartDT_split(train = train, test = test, targ = targ, preds = preds, min_split = 2, cp = 0)
+covTypeTree_split <- rpartDT_split(train = train, test = test, targ = targ, min_split = 2, cp = 0)
 
 
 # # randomForest package
