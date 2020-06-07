@@ -28,10 +28,10 @@ preds <- c("Elevation", "Aspect","Slope", "Horizontal_Distance_To_Hydrology","Ve
 rm(df)
 
 
-
 # rpart package
 source("decisionTreeRpart.R")
 covTypeTree <- rpartDT(train = train, test = test, targ = targ, min_split = 2, cp = 0)
+
 
 source("decisionTreeRpart_split.R")
 covTypeTree_split <- rpartDT_split(train = train, test = test, targ = targ, preds = preds, min_split = 2, cp = 0)
@@ -39,12 +39,13 @@ covTypeTree_split <- rpartDT_split(train = train, test = test, targ = targ, pred
 
 # randomForest package
 source("randomForestPcg.R")
-CovTypeRF <- randomForestPcg(train = train, test = test, targ = targ, ntree = 50, importance = TRUE, min_split = 2, cp = 0)
+CovTypeRF <- randomForestPcg(train = train, test = test, targ = targ, ntree = 1, importance = TRUE, min_split = 2, cp = 0)
 
 
 # randomForest implementation
 source("randomForestImp.R")
-CovTypeImp <- randomForestImp(train = train, test = test, targ = targ, predictors = preds, perc_predictors = 0.8, ntree = 5, min_split = 2, complex_param = 0.0)
+CovTypeImp <- randomForestImp(train = train, test = test, targ = targ, predictors = preds, perc_predictors = 0.8, ntree = 50, min_split = 2, complex_param = 0.25)
+
 
 #randomForest implementation with user defined split function
 source("randomForestImp_split.R")
@@ -95,9 +96,9 @@ rm(ds)
 # breastCancRF <- randomForestPcg(train = train_BC, test = test_BC, targ = targ_BC, ntree = 10, importance = TRUE, min_split = 2, cp = 0)
 
 
-# # randomForest implementation
-# source("randomForestImp.R")
-# breastCancImp <- randomForestImp(train = train_BC, test = test_BC, targ = targ_BC, predictors = preds_BC, perc_predictors = 0.4, ntree = 10, min_split = 5, complex_param = 0.001)
+# randomForest implementation
+source("randomForestImp.R")
+breastCancImp <- randomForestImp(train = train_BC, test = test_BC, targ = targ_BC, predictors = preds_BC, perc_predictors = 0.8, ntree = 1, min_split = 2, complex_param = 0)
 
 
 #randomForest implementation with user defined split function
