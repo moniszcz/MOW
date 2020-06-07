@@ -12,35 +12,49 @@ source("helper.R")
 #   preds - features to build the tree
 #   ntree - number of trees
 #   importance - If True, the model will calculate the feature importance for further analysis. (default = False)
-randomForestPcg <- function(train, test, targ, preds, ntree, importance, minsplit, cp){
+randomForestPcg <- function(k, data, targ, preds, ntree, importance, minsplit, cp){
   
   targFormula <- as.formula(paste0(targ, "~ .")) 
-  if(missing(preds)){
-    if(missing(minsplit) && missing(cp)){
-      model <- randomForest(targFormula, data = train, ntree = ntree, importance = importance)
-    }else{
-      model <- randomForest(targFormula, data = train, ntree = ntree, importance = importance, args=list( minsplit = minsplit, cp= cp))
+  
+  parts = split(data, sample(1:k, nrow(data), replace=T))
+  
+  for(i in 1:k) {
+    test_data = parts[[i]]
+    training_data = c();
+    
+    for(j in 1:k) {
+      if(j != i) {
+        training_data = rbind(training_data, parts[[j]])
+      }
     }
-  }else{
-    if(missing(minsplit) && missing(cp)){
-      model <- randomForest(targFormula, data = train[, preds], ntree = ntree, importance = importance)
+      
+    if(missing(preds)){
+      if(missing(minsplit) && missing(cp)){
+        model <- randomForest(targFormula, data = training_data, ntree = ntree, importance = importance)
+      }else{
+        model <- randomForest(targFormula, data = training_data, ntree = ntree, importance = importance, args=list( minsplit = minsplit, cp= cp))
+      }
     }else{
-      model <- randomForest(targFormula, data = train[, preds], ntree = ntree, importance = importance, args=list( minsplit = minsplit, cp= cp))
+      if(missing(minsplit) && missing(cp)){
+        model <- randomForest(targFormula, data = training_data[, preds], ntree = ntree, importance = importance)
+      }else{
+        model <- randomForest(targFormula, data = training_data[, preds], ntree = ntree, importance = importance, args=list( minsplit = minsplit, cp= cp))
+      }
     }
+    #print(model)
+  predictions <- predict(model, test_data, type = "class")
+  confMat1 <- confusionMatrix(factor(predictions),factor(test_data[[targ]]))
+  print(confMat1)
+  confMat01 <- confmat01(predictions, test_data[[targ]])
+  tpfp <- sapply(confMat01, function(cm) c(tpr=tpr(cm), fpr=fpr(cm), fm=f.measure(cm)))
+  tpfp <- round(tpfp, 3)
+  print(tpfp)
+  means <- rowMeans(tpfp)
+  means <- round(means, 3)
+  print(means)
+  
+  importance <- varImp(model)
+  varImpPlot(model)
+  # print(head(importance))
   }
-  print(model)
-predictions <- predict(model, test, type = "class")
-confMat1 <- confusionMatrix(factor(predictions),factor(test[[targ]]))
-print(confMat1)
-confMat01 <- confmat01(predictions, test[[targ]])
-tpfp <- sapply(confMat01, function(cm) c(tpr=tpr(cm), fpr=fpr(cm), fm=f.measure(cm)))
-tpfp <- round(tpfp, 3)
-print(tpfp)
-means <- rowMeans(tpfp)
-means <- round(means, 3)
-print(means)
-
-importance <- varImp(model)
-varImpPlot(model)
-# print(head(importance))
 }

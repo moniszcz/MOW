@@ -51,7 +51,7 @@ randomForestImp <- function(train, test, targ, predictors, perc_predictors, ntre
     tree <- rpart(targFormula, inbagPreds, control = t_control) 
     # add our tree to the forest
     randForest[[i]] <- tree
-
+    
     pred <- predict(tree, test, type = "class")
     predictions <- cbind(predictions, pred)
   }
@@ -70,5 +70,5 @@ randomForestImp <- function(train, test, targ, predictors, perc_predictors, ntre
   means <- rowMeans(tpfp)
   means <- round(means, 3)
   print(means)
-
+  
 }

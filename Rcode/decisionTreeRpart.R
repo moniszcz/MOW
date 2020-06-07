@@ -26,9 +26,9 @@ rpartDT <- function(train, test, targ, preds, min_split, min_bucket, cp){
   }
   
   if(missing(preds)){
-      model <- rpart(targFormula, data = train,  control = t_control)
+    model <- rpart(targFormula, data = train,  control = t_control)
   }else{
-      model <- rpart(targFormula, data = train[, preds], control = t_control)
+    model <- rpart(targFormula, data = train[, preds], control = t_control)
   }
   
   predictions <- predict(model, test, type = "class")

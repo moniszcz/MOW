@@ -15,7 +15,7 @@ source("anova.R")
 rpartDT_split <- function(train, test, targ, preds, min_split, min_bucket, cp){
   
   alist <- list(init= anova_init, split=anova_split, eval=anova_eval)
-  alist_test <- list(init= anova_init2, split=anova_split, eval=anova_eval)
+  alist_test <- list(init= anova_init2, split=test_split, eval=anova_eval)
   
   targFormula <- as.formula(paste0(targ, "~ ."))
   

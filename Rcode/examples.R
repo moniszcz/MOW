@@ -27,10 +27,11 @@ preds <- c("Elevation", "Aspect","Slope", "Horizontal_Distance_To_Hydrology","Ve
            "Hillshade_Noon","Hillshade_3pm","Horizontal_Distance_To_Fire_Points", paste("Wilderness_Area", 1:4, sep = ""), paste("Soil_Type", 1:40, sep = ""), "Cover_Type")
 rm(df)
 
+
+
 # rpart package
 source("decisionTreeRpart.R")
 covTypeTree <- rpartDT(train = train, test = test, targ = targ, min_split = 2, cp = 0)
-
 
 source("decisionTreeRpart_split.R")
 covTypeTree_split <- rpartDT_split(train = train, test = test, targ = targ, preds = preds, min_split = 2, cp = 0)
@@ -45,10 +46,12 @@ CovTypeRF <- randomForestPcg(train = train, test = test, targ = targ, ntree = 50
 source("randomForestImp.R")
 CovTypeImp <- randomForestImp(train = train, test = test, targ = targ, predictors = preds, perc_predictors = 0.8, ntree = 5, min_split = 2, complex_param = 0.0)
 
-
 #randomForest implementation with user defined split function
 source("randomForestImp_split.R")
-CovTypeImp_split <- randomForestImp_split(train = train, test = test, targ = targ, predictors = preds, perc_predictors = 0.8, ntree = 5, min_split = 2, complex_param = 0.0)
+CovTypeImp_split <- randomForestImp_split(k = 4, data = data, targ = targ_BC, predictors = preds_BC, perc_predictors = 0.8, ntree = 10, min_split = 5, complex_param = 0.001)
+
+
+
 
 
 
@@ -61,6 +64,7 @@ sapply(ds,function(x)any(is.na(x)))
 #so that we can reproduce results
 set.seed(12)
 
+data <- ds
 #I’ll use a standard 80/20 split, train the model, 
 #then evaluate it and print the confusion matrix
 train.fraction_BC <- 0.8
@@ -81,21 +85,21 @@ rm(ds)
 # # rpart package
 # source("decisionTreeRpart.R")
 # breastCancTree <- rpartDT(train = train_BC, test = test_BC, preds = preds_BC, targ = targ_BC, min_split = 2, cp = 0.0)
-# 
-source("decisionTreeRpart_split.R")
-breastCancTree_split <- rpartDT_split(train = train_BC, test = test_BC, preds = preds_BC, targ = targ_BC, min_split = 2, cp = 0.0)
 
- 
-# randomForest package
-source("randomForestPcg.R")
-breastCancRF <- randomForestPcg(train = train_BC, test = test_BC, targ = targ_BC, ntree = 10, importance = TRUE, min_split = 2, cp = 0)
+# source("decisionTreeRpart_split.R")
+# breastCancTree_split <- rpartDT_split(train = train_BC, test = test_BC, preds = preds_BC, targ = targ_BC, min_split = 2, cp = 0.0)
 
 
-# randomForest implementation
-source("randomForestImp.R")
-breastCancImp <- randomForestImp(train = train_BC, test = test_BC, targ = targ_BC, predictors = preds_BC, perc_predictors = 0.4, ntree = 10, min_split = 5, complex_param = 0.001)
+# # randomForest package
+# source("randomForestPcg.R")
+# breastCancRF <- randomForestPcg(train = train_BC, test = test_BC, targ = targ_BC, ntree = 10, importance = TRUE, min_split = 2, cp = 0)
+
+
+# # randomForest implementation
+# source("randomForestImp.R")
+# breastCancImp <- randomForestImp(train = train_BC, test = test_BC, targ = targ_BC, predictors = preds_BC, perc_predictors = 0.4, ntree = 10, min_split = 5, complex_param = 0.001)
 
 
 #randomForest implementation with user defined split function
 source("randomForestImp_split.R")
-breastCancImp_split <- randomForestImp_split(train = train_BC, test = test_BC, targ = targ_BC, predictors = preds_BC, perc_predictors = 0.8, ntree = 10, min_split = 5, complex_param = 0.001)
+breastCancImp_split <- randomForestImp_split(k = 4, data = data, targ = targ_BC, predictors = preds_BC, perc_predictors = 0.8, ntree = 10, min_split = 5, complex_param = 0.001)
