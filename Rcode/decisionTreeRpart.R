@@ -13,6 +13,8 @@ source("helper.R")
 #               the code either sets minsplit to minbucket*3 or minbucket to minsplit/3, as appropriate
 #   cp - complexity parameter. Any split that does not decrease the overall lack of fit by a factor of cp is not attempted.
 
+#return confusion matrix, TPR, FPR, FM table and means
+
 rpartDT <- function(train, test, targ, preds, min_split, min_bucket, cp){
   
   targFormula <- as.formula(paste0(targ, "~ ."))
@@ -33,16 +35,17 @@ rpartDT <- function(train, test, targ, preds, min_split, min_bucket, cp){
   
   predictions <- predict(model, test, type = "class")
   
-  confMat1 <- confusionMatrix(factor(predictions),factor(test[[targ]]))
-  print(confMat1)
+  #performance indicators
+  confMat <- confusionMatrix(factor(predictions),factor(test[[targ]]))
   
   confMat01 <- confmat01(predictions, test[[targ]])
   
   tpfp <- sapply(confMat01, function(cm) c(tpr=tpr(cm), fpr=fpr(cm), fm=f.measure(cm)))
   tpfp <- round(tpfp, 3)
-  print(tpfp)
   
   means <- rowMeans(tpfp)
   means <- round(means, 3)
-  print(means)
+  
+  ret_values <- list(confMat, tpfp, means)
+  return(ret_values)
 }

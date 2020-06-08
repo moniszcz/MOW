@@ -17,6 +17,8 @@ source("anova.R")
 #   min_bucket - he minimum number of observations in any terminal <leaf> node. If only one of minbucket or minsplit is specified, 
 #               the code either sets minsplit to minbucket*3 or minbucket to minsplit/3, as appropriate
 
+#return confusion matrix, TPR, FPR, FM table and means
+
 randomForestImp_split <- function(k, data, targ, predictors, perc_predictors, ntree, min_split, min_bucket, complex_param) {
   
   # create an empty list for trees
@@ -77,8 +79,10 @@ randomForestImp_split <- function(k, data, targ, predictors, perc_predictors, nt
       predictions <- round(predict(tree, test_data))
       #predictions <- cbind(predictions, pred)
     }
-    confMat1 <- confusionMatrix(factor(predictions),factor(test_data[[targ]]))
-    print(confMat1)
+    
+    #performance indicators
+    confMat <- confusionMatrix(factor(predictions),factor(test_data[[targ]]))
+    print(confMat)
     
     confMat01 <- confmat01(predictions, test_data[[targ]])
     

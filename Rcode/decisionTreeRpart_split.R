@@ -12,6 +12,8 @@ source("anova.R")
 #   min_bucket - he minimum number of observations in any terminal <leaf> node. If only one of minbucket or minsplit is specified, 
 #               the code either sets minsplit to minbucket*3 or minbucket to minsplit/3, as appropriate
 
+#return confusion matrix, TPR, FPR, FM table and means
+
 rpartDT_split <- function(train, test, targ, preds, min_split, min_bucket, cp){
   
   alist <- list(init= anova_init, split=anova_split, eval=anova_eval)
@@ -34,18 +36,17 @@ rpartDT_split <- function(train, test, targ, preds, min_split, min_bucket, cp){
   }
   predictions <- round(predict(model, test))
   
-  confMat1 <- confusionMatrix(factor(predictions),factor(test[[targ]]))
-  print(confMat1)
+  #performance indicators
+  confMat <- confusionMatrix(factor(predictions),factor(test[[targ]]))
   
   confMat01 <- confmat01(predictions, test[[targ]])
   
   tpfp <- sapply(confMat01, function(cm) c(tpr=tpr(cm), fpr=fpr(cm), fm=f.measure(cm)))
   tpfp <- round(tpfp, 3)
-  print(tpfp)
   
   means <- rowMeans(tpfp)
   means <- round(means, 3)
-  print(means)
   
-  
+  ret_values <- list(confMat, tpfp, means)
+  return(ret_values)
 }

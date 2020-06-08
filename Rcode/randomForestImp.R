@@ -16,6 +16,7 @@ source("helper.R")
 #               the code either sets minsplit to minbucket*3 or minbucket to minsplit/3, as appropriate
 #   complex_param - complexity parameter. Any split that does not decrease the overall lack of fit by a factor of cp is not attempted.
 
+#return confusion matrix, TPR, FPR, FM table and means
 
 randomForestImp <- function(train, test, targ, predictors, perc_predictors, ntree, min_split, min_bucket, complex_param) {
   
@@ -55,20 +56,21 @@ randomForestImp <- function(train, test, targ, predictors, perc_predictors, ntre
     pred <- predict(tree, test, type = "class")
     predictions <- cbind(predictions, pred)
   }
+  
   predicted_value <- apply(predictions, 1, function(x) names(which.max(table(x))))
   data_to_return <- cbind(test, predicted_value)
   
-  confMat1 <- confusionMatrix(factor(predicted_value), factor(test[[targ]]))
-  print(confMat1)
+  #performance indicators
+  confMat <- confusionMatrix(factor(predicted_value), factor(test[[targ]]))
   
   confMat01 <- confmat01(predicted_value, test[[targ]])
   
   tpfp <- sapply(confMat01, function(cm) c(tpr=tpr(cm), fpr=fpr(cm), fm=f.measure(cm)))
   tpfp <- round(tpfp, 3)
-  print(tpfp)
   
   means <- rowMeans(tpfp)
   means <- round(means, 3)
-  print(means)
   
+  ret_values <- list(confMat, tpfp, means)
+  return(ret_values)
 }
