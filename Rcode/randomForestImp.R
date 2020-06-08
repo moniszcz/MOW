@@ -20,6 +20,7 @@ source("helper.R")
 
 randomForestImp <- function(train, test, targ, predictors, perc_predictors, ntree, min_split, min_bucket, complex_param) {
   
+  set.seed(42)
   # create an empty list for trees
   randForest <- list()
   predictions <- c()
