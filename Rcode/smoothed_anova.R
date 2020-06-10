@@ -69,6 +69,45 @@ anova_split <- function(y, wt, x, parms, continuous) {
 }
 
 
+anova_split_cov <- function(y, wt, x, parms, continuous) {
+  # Center y
+  n <- length(y)
+  y <- y- sum(y*wt)/sum(wt)
+  
+  if (continuous) {
+    # continuous x variable
+    temp <- cumsum(y*wt)[-n]
+    
+    left.wt  <- cumsum(wt)[-n]
+    right.wt <- sum(wt) - left.wt
+    lmean <- temp/left.wt
+    rmean <- -temp/right.wt
+    goodness <- (left.wt*lmean^2 + right.wt*rmean^2)/sum(wt*y^2)
+    list(goodness= goodness, direction=sign(lmean))
+  }
+  else {
+    # Categorical X variable
+    ux <- sort(unique(x))
+    wtsum <- tapply(wt, x, sum)
+    ysum  <- tapply(y*wt, x, sum)
+    means <- ysum/wtsum
+    
+    # For anova splits, we can order the categories by their means
+    #  then use the same code as for a non-categorical
+    ord <- order(means)
+    n <- length(ord)
+    temp <- cumsum(ysum[ord])[-n]
+    left.wt  <- cumsum(wtsum[ord])[-n]
+    right.wt <- sum(wt) - left.wt
+    lmean <- temp/left.wt
+    rmean <- -temp/right.wt
+    list(goodness= (left.wt*lmean^2 + right.wt*rmean^2)/sum(wt*y^2),
+         direction = ux[ord])
+  }
+}
+
+
+
 # arguments in init function:
 #   y - vector or matrix of response values
 #   offset - the offset term, if any, found on the right hand side of the formula

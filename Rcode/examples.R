@@ -28,22 +28,22 @@ table(train[[targ]])/nrow(train)
 
 rm(df)
 
-# # rpart package
-# source("decisionTreeRpart.R")
-# covTypeTree <- rpartDT(train = train, test = test, targ = targ, min_split = 2, cp = 0)
-# covTypeTree
-# 
-# 
-# # rpart package with user defined split funtion
-# source("decisionTreeRpart_split.R")
-# covTypeTree_split <- rpartDT_split(train = train, test = test, targ = targ, preds = preds, min_split = 2, cp = 0)
-# covTypeTree_split
-# 
-# 
-# # randomForest package
-# source("randomForestPcg.R")
-# CovTypeRF <- randomForestPcg(train = train, test = test, targ = targ, ntree = 1, importance = TRUE, min_split = 2, cp = 0)
-# CovTypeRF
+# rpart package
+source("decisionTreeRpart.R")
+covTypeTree <- rpartDT(train = train, test = test, targ = targ, min_split = 2, cp = 0)
+covTypeTree
+
+
+# rpart package with user defined split funtion
+source("decisionTreeRpart_split.R")
+covTypeTree_split <- rpartDT_split(train = train, test = test, targ = targ, preds = preds, min_split = 2, cp = 0)
+covTypeTree_split
+
+
+# randomForest package
+source("randomForestPcg.R")
+CovTypeRF <- randomForestPcg(train = train, test = test, targ = targ, ntree = 1, importance = TRUE, min_split = 2, cp = 0)
+CovTypeRF
 
 
 # randomForest implementation
@@ -52,15 +52,13 @@ CovTypeImp <- randomForestImp(train = train, test = test, targ = targ, predictor
 CovTypeImp
 
 
-source("randomForestImp_test.R")
-CovTypeImp_test <- randomForestImp_test(train = train, test = test, targ = targ, predictors = preds, perc_predictors = 0.81, ntree = 1, min_split = 2, complex_param = 0)
-CovTypeImp_test
+source("randomForestImp_split_cov.R")
+CovTypeImp_split <- randomForestImp_split_cov(train = train, test = test, targ = targ, predictors = preds, perc_predictors = 0.8, ntree = 1, min_split = 2, complex_param = 0)
+CovTypeImp_split
 
 
-# # randomForest implementation with user defined split function
-# source("randomForestImp_split.R")
-# CovTypeImp_split <- randomForestImp_split(k = 4, data = data, targ = targ_BC, predictors = preds_BC, perc_predictors = 0.8, ntree = 1, min_split = 2, complex_param = 0.25)
-#CovTypeImp_split
+
+
 
 
 
@@ -94,28 +92,28 @@ table(train_BC[[targ_BC]])/nrow(train_BC)
 
 rm(ds)
 
-# # rpart package
-# source("decisionTreeRpart.R")
-# breastCancTree <- rpartDT(train = train_BC, test = test_BC, preds = preds_BC, targ = targ_BC, min_split = 2, cp = 0.0)
-# breastCancTree
-# 
-# 
-# # rpart package with user defined split funtion
-# source("decisionTreeRpart_split.R")
-# breastCancTree_split <- rpartDT_split(train = train_BC, test = test_BC, preds = preds_BC, targ = targ_BC, min_split = 2, cp = 0.0)
-# breastCancTree_split
-# 
-# 
-# # randomForest package
-# source("randomForestPcg.R")
-# breastCancRF <- randomForestPcg(train = train_BC, test = test_BC, targ = targ_BC, ntree = 10, importance = TRUE, min_split = 2, cp = 0)
-# breastCancRF
+# rpart package
+source("decisionTreeRpart.R")
+breastCancTree <- rpartDT(train = train_BC, test = test_BC, preds = preds_BC, targ = targ_BC, min_split = 2, cp = 0.25)
+breastCancTree
+
+
+# rpart package with user defined split funtion
+source("decisionTreeRpart_split.R")
+breastCancTree_split <- rpartDT_split(train = train_BC, test = test_BC, preds = preds_BC, targ = targ_BC, min_split = 2, cp = 0.25)
+breastCancTree_split
+
+
+# randomForest package
+source("randomForestPcg.R")
+breastCancRF <- randomForestPcg(train = train_BC, test = test_BC, targ = targ_BC, ntree = 10, importance = TRUE, min_split = 2, cp = 0)
+breastCancRF
 
 
 # randomForest implementation
-# source("randomForestImp.R")
-# breastCancImp <- randomForestImp(train = train_BC, test = test_BC, targ = targ_BC, predictors = preds_BC, perc_predictors = 0.8, ntree = 1, min_split = 2, complex_param = 0)
-# breastCancImp
+source("randomForestImp.R")
+breastCancImp <- randomForestImp(train = train_BC, test = test_BC, targ = targ_BC, predictors = preds_BC, perc_predictors = 0.8, ntree = 1, min_split = 2, complex_param = 0)
+breastCancImp
 
 
 #randomForest implementation with user defined split function

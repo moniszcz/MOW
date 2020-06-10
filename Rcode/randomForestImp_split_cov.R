@@ -26,7 +26,7 @@ randomForestImp_test <- function(train, test, targ, predictors, perc_predictors,
   randForest <- list()
   predictions <- c()
   
-  alist <- list(init= anova_init, split=anova_split, eval=anova_eval)
+  alist <- list(init= anova_init, split=anova_split_cov, eval=anova_eval)
   
   # build trees
   for(i in 1:ntree) {

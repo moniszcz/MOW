@@ -17,7 +17,6 @@ source("smoothed_anova.R")
 rpartDT_split <- function(train, test, targ, preds, min_split, min_bucket, cp){
   
   alist <- list(init= anova_init, split=anova_split, eval=anova_eval)
-  alist_test <- list(init= anova_init2, split=test_split, eval=anova_eval)
   
   targFormula <- as.formula(paste0(targ, "~ ."))
   
@@ -30,9 +29,9 @@ rpartDT_split <- function(train, test, targ, preds, min_split, min_bucket, cp){
   }
   
   if(missing(preds)){
-    model <- rpart(targFormula, data = train,  method = alist_test, control = t_control)
+    model <- rpart(targFormula, data = train,  method = alist, control = t_control)
   }else{
-    model <- rpart(targFormula, data = train[, preds], method = alist_test, control = t_control)
+    model <- rpart(targFormula, data = train[, preds], method = alist, control = t_control)
   }
   predictions <- round(predict(model, test))
   

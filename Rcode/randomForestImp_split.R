@@ -69,7 +69,6 @@ randomForestImp_split <- function(k, data, targ, predictors, perc_predictors, nt
       randForest[[i]] <- tree
       
       predictions <- round(predict(tree, test_data))
-      #predictions <- cbind(predictions, pred)
     }
     
     #performance indicators
