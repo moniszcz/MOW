@@ -28,7 +28,6 @@ randomForestImp_split <- function(k, data, targ, predictors, perc_predictors, nt
   
   alist <- list(init= anova_init, split=anova_split, eval=anova_eval)
   
-  
   parts = split(data, sample(1:k, nrow(data), replace=T))
   
   for(i in 1:k) {

@@ -58,10 +58,6 @@ CovTypeImp_split
 
 
 
-
-
-
-
 source("loadDataCancer.R")
 
 #Breast Cancer Dataset

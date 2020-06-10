@@ -123,18 +123,3 @@ anova_init <- function(y, offset, parms, wt) {
                sep='')
        })
 }
-
-anova_init2 <- function(y, offset, parms, wt) {
-  if (is.matrix(y) && ncol(y) > 1)
-    stop("Matrix response not allowed")
-  if (!missing(parms) && length(parms) > 0)
-    warning("parameter argument ignored")
-  if (length(offset)) y <- y - offset
-  sfun <- function(yval, dev, wt, ylevel, digits ) {
-    paste(" mean=", format(signif(yval, digits)),
-          ", MSE=" , format(signif(dev/wt, digits)),
-          sep = '')
-  }
-  environment(sfun) <- .GlobalEnv
-  list(y = c(y), parms = NULL, numresp = 1, numy = 1, summary = sfun)
-}

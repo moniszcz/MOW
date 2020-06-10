@@ -59,7 +59,6 @@ randomForestImp <- function(train, test, targ, predictors, perc_predictors, ntre
   }
   
   predicted_value <- apply(predictions, 1, function(x) names(which.max(table(x))))
-  data_to_return <- cbind(test, predicted_value)
   
   #performance indicators
   confMat <- confusionMatrix(factor(predicted_value), factor(test[[targ]]))
