@@ -1,6 +1,6 @@
 library(rpart)
 library(caret)
-source("anova.R")
+source("smoothed_anova.R")
 
 #build decision tree
 #arguments:

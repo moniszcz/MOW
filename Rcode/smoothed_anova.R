@@ -37,9 +37,11 @@ anova_split <- function(y, wt, x, parms, continuous) {
     right.wt <- sum(wt) - left.wt
     lmean <- temp/left.wt
     rmean <- -temp/right.wt
-    #goodness <- (left.wt*lmean^2 + right.wt*rmean^2)/sum(wt*y^2)
     goodness <- (left.wt*lmean^2 + right.wt*rmean^2)/sum(wt*y^2)
-    list(goodness= goodness, direction=sign(lmean))
+    rx <- rank(x[1]) #use only the ranks of x, to preserve invariance
+    fit <- smooth.spline(rx, goodness, df=2)
+    list(goodness= predict(fit, rx)$y, direction=sign(lmean))
+    
   }
   else {
     # Categorical X variable
@@ -57,10 +59,10 @@ anova_split <- function(y, wt, x, parms, continuous) {
     right.wt <- sum(wt) - left.wt
     lmean <- temp/left.wt
     rmean <- -temp/right.wt
-    list(goodness= (left.wt*lmean^2 + right.wt*rmean^2)/sum(wt*y^2),
-        direction = ux[ord])
-    # list(goodness= (left.wt*lmean + right.wt*rmean)/sum(wt*y),
-    #      direction = ux[ord])
+    goodness <- (left.wt*lmean^2 + right.wt*rmean^2)/sum(wt*y^2)
+    rx <- rank(x[1]) #use only the ranks of x, to preserve invariance
+    fit <- smooth.spline(rx, goodness, df=2)
+    list(goodness= predict(fit, rx)$y, direction=sign(lmean))
   }
 }
 

@@ -1,7 +1,7 @@
 library(rpart)
 library(caret)
 library(dplyr)
-source("anova.R")
+source("smoothed_anova.R")
 
 
 #create random forest 
@@ -25,15 +25,6 @@ randomForestImp_split <- function(k, data, targ, predictors, perc_predictors, nt
   # create an empty list for trees
   randForest <- list()
   predictions <- c()
-  
-  # set the rpart.control object
-  if(missing(min_split)){
-    t_control <- rpart.control(minbucket =  min_bucket, cp = complex_param)
-  } else if (missing(min_bucket)){
-    t_control <- rpart.control(minsplit = min_split, cp = complex_param)
-  } else{
-    t_control <- rpart.control(minsplit = min_split, minbucket =  min_bucket, cp = complex_param)
-  }
   
   alist <- list(init= anova_init, split=anova_split, eval=anova_eval)
   
